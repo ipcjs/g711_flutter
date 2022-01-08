@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'g711_flutter.dart';
+import 'native_g711.dart';
 
 /// Created by ipcjs on 2022/1/8.
 class DartG711Codec implements G711Codec {
