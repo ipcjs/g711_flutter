@@ -1,6 +1,6 @@
 # g711_flutter
 
-A new flutter plugin project.
+PCM to G711 Fast Conversions
 
 ## Document
 

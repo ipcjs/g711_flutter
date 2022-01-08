@@ -18,7 +18,7 @@ class DartG711Codec implements G711Codec {
     }
   }
 
-  const DartG711Codec();
+  DartG711Codec();
 
   @override
   Uint8List pcm16ToUlaw(Uint8List pcm16) {

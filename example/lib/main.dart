@@ -109,7 +109,7 @@ class _MyAppState extends State<MyApp> {
             OutlinedButton(
               onPressed: () {
                 final g1 = NativeG711Codec();
-                const g2 = DartG711Codec();
+                final g2 = DartG711Codec();
                 final pcm16 = Uint8List.sublistView(Int16List.fromList([1, -1, 0xffff, 0, 0x7fff, 0x8000]));
                 final ulaw1 = g1.pcm16ToUlaw(pcm16);
                 final ulaw2 = g2.pcm16ToUlaw(pcm16);
@@ -133,7 +133,7 @@ class _MyAppState extends State<MyApp> {
                 w.printElapsed('dart  .preload', () => DartG711Codec.forcePreloadTable());
 
                 final g1 = NativeG711Codec();
-                const g2 = DartG711Codec();
+                final g2 = DartG711Codec();
                 final random = math.Random();
                 final pcm16 = Uint8List.fromList(List.generate(1024 * 1024, (index) => random.nextInt(0xff)));
 

@@ -1,6 +1,6 @@
 name: g711_flutter
-description: A new flutter plugin project.
-version: 0.0.1
+description: PCM to G711 Fast Conversions
+version: 1.0.0
 homepage:
 
 environment:

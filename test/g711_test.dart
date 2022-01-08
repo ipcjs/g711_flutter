@@ -15,7 +15,7 @@ void main() {
       expect(pcm16, _pcm_in);
     });
     test('DartG711', () {
-      const g711 = DartG711Codec();
+      final g711 = DartG711Codec();
 
       final ulaw = g711.pcm16ToUlaw(_pcm_in);
       final pcm_out = g711.ulawToPcm16(ulaw);
