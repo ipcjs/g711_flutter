@@ -26,7 +26,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  G711Flutter g711 = G711Flutter();
+  NativeG711Codec g711 = NativeG711Codec();
   FlutterSoundPlayer? _player;
   FlutterSoundRecorder? _recorder;
 
@@ -81,7 +81,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await G711Flutter.platformVersion ?? 'Unknown platform version';
+          await NativeG711Codec.platformVersion ?? 'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }

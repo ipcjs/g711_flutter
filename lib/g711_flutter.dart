@@ -32,15 +32,24 @@ final _pcm16_to_ulaw = _g711.lookupFunction<
     Void Function(Int32, Pointer<Uint8>, Pointer<Uint8>),
     void Function(int, Pointer<Uint8>, Pointer<Uint8>)>('pcm16_to_ulaw');
 
-class G711Flutter {
+abstract class G711Codec {
+  Uint8List pcm16ToUlaw(Uint8List pcm16);
+
+  Uint8List ulawToPcm16(Uint8List g711);
+}
+
+class NativeG711Codec implements G711Codec {
   static var _initiated = false;
-  G711Flutter() {
+
+  NativeG711Codec() {
     if (!_initiated) {
       _initiated = true;
       _pcm16_ulaw_tableinit();
       _ulaw_pcm16_tableinit();
     }
   }
+
+  @override
   Uint8List pcm16ToUlaw(Uint8List pcm16) {
     final inSize = pcm16.length;
     final outSize = inSize ~/ 2;
@@ -56,6 +65,7 @@ class G711Flutter {
     return out;
   }
 
+  @override
   Uint8List ulawToPcm16(Uint8List g711) {
     final inSize = g711.length;
     final outSize = inSize * 2;

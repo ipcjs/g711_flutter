@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await G711Flutter.platformVersion, '42');
+    expect(await NativeG711Codec.platformVersion, '42');
   });
 }
