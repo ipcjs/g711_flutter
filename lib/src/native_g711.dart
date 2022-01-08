@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
@@ -41,11 +39,15 @@ abstract class G711Codec {
 class NativeG711Codec implements G711Codec {
   static var _initiated = false;
 
+  static void forcePreloadTable() {
+    _pcm16_ulaw_tableinit();
+    _ulaw_pcm16_tableinit();
+  }
+
   NativeG711Codec() {
     if (!_initiated) {
       _initiated = true;
-      _pcm16_ulaw_tableinit();
-      _ulaw_pcm16_tableinit();
+      forcePreloadTable();
     }
   }
 

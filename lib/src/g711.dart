@@ -1,6 +1,7 @@
 
+/// copy from [g711.c](../../ios/Classes/g711.c)
 class G711{
-
+  G711._();
 /*
  * g711.c
  *
@@ -93,7 +94,7 @@ static /*short*/ int search(
  * For further information see John C. Bellamy's Digital Telephony, 1982,
  * John Wiley & Sons, pps 98-111 and 472-476.
  */
-/*unsigned char*/ int
+/*unsigned char*/static int
 linear2alaw(/*short*/ int pcm_val)	/* 2's complement (16-bit range) */
 {
    /*short*/ final int	 mask;
@@ -130,7 +131,7 @@ linear2alaw(/*short*/ int pcm_val)	/* 2's complement (16-bit range) */
  * alaw2linear() - Convert an A-law value to 16-bit linear PCM
  *
  */
-/*short*/ int
+/*short*/static int
 alaw2linear(
    /*unsigned char*/ int	a_val)
 {
@@ -187,7 +188,7 @@ static const CLIP =            8159;
 * For further information see John C. Bellamy's Digital Telephony, 1982,
 * John Wiley & Sons, pps 98-111 and 472-476.
 */
-/*unsigned char*/ int
+/*unsigned char*/static int
 linear2ulaw(
    /*short*/int pcm_val)	/* 2's complement (16-bit range) */
 {
@@ -230,7 +231,7 @@ linear2ulaw(
  * Note that this function expects to be passed the complement of the
  * original code word. This is in keeping with ISDN conventions.
  */
-/*short*/int
+/*short*/static int
 ulaw2linear(
    /*unsigned char*/int	u_val)
 {
@@ -250,7 +251,7 @@ ulaw2linear(
 }
 
 /* A-law to u-law conversion */
-/*unsigned char*/ int
+/*unsigned char*/static int
 alaw2ulaw(
    /*unsigned char*/int	aval)
 {
@@ -260,7 +261,7 @@ alaw2ulaw(
 }
 
 /* u-law to A-law conversion */
-/*unsigned char*/int
+/*unsigned char*/static int
 ulaw2alaw(
    /*unsigned char*/int	uval)
 {
