@@ -10,18 +10,19 @@ import 'dart:typed_data';
 const _forceUseInt16LeList = false;
 
 /// @see: [Int16List.sublistView]
-IntListValue int16LeListValueSublistView(TypedData data, [int start = 0, int? end]) =>
-    Endian.host == Endian.little && !_forceUseInt16LeList
-        ? _Int16ListValue(Int16List.sublistView(data, start, end))
-        : _Int16LeListValue(
-            Int16LeList(ByteData.sublistView(data, start, end)));
+IntListValue int16LeListValueSublistView(TypedData data, [int start = 0, int? end]) => Endian.host == Endian.little &&
+        !_forceUseInt16LeList &&
+        // Int16List requires byte alignment.
+        // see: https://github.com/dart-lang/sdk/blob/master/sdk/lib/_internal/vm/lib/typed_data_patch.dart#L1935
+        data.offsetInBytes % Int16List.bytesPerElement == 0
+    ? _Int16ListValue(Int16List.sublistView(data, start, end))
+    : _Int16LeListValue(Int16LeList(ByteData.sublistView(data, start, end)));
 
 /// @see: [Int16List]
 IntListValue int16LeListValue(int length) {
   return Endian.host == Endian.little && !_forceUseInt16LeList
       ? _Int16ListValue(Int16List(length))
-      : _Int16LeListValue(
-          Int16LeList(ByteData(Int16LeList.bytesPerElement * length)));
+      : _Int16LeListValue(Int16LeList(ByteData(Int16LeList.bytesPerElement * length)));
 }
 
 class Int16LeList extends ListBase<int> {
@@ -38,12 +39,10 @@ class Int16LeList extends ListBase<int> {
   set length(int newLength) => throw UnsupportedError('Int16LeList.length');
 
   @override
-  operator [](int index) =>
-      _data.getInt16(index * bytesPerElement, Endian.little);
+  operator [](int index) => _data.getInt16(index * bytesPerElement, Endian.little);
 
   @override
-  void operator []=(int index, int value) =>
-      _data.setInt16(index * bytesPerElement, value, Endian.little);
+  void operator []=(int index, int value) => _data.setInt16(index * bytesPerElement, value, Endian.little);
 
   Uint8List asUint8List() => Uint8List.sublistView(_data);
 }
