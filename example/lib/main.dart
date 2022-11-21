@@ -3,13 +3,10 @@ import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:async/async.dart' show StreamSinkExtensions, StreamSinkTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:g711_flutter/g711_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:g711_flutter_example/sound_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,51 +21,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  NativeG711Codec g711 = NativeG711Codec();
-  FlutterSoundPlayer? _player;
-  FlutterSoundRecorder? _recorder;
+  late NativeG711Codec g711 = NativeG711Codec();
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
-    _player = FlutterSoundPlayer()..openAudioSession();
-    _recorder = FlutterSoundRecorder()..openAudioSession();
-  }
-
-  @override
-  void dispose() {
-    _player?.closeAudioSession();
-    _recorder?.closeAudioSession();
-    super.dispose();
-  }
-
-  void _test() async {
-    if (!await Permission.microphone.request().isGranted) {
-      return;
-    }
-    if (_player?.isPlaying == true) {
-      await _player?.stopPlayer();
-      await _recorder?.stopRecorder();
-    } else {
-      await _player?.startPlayerFromStream();
-      _recorder?.startRecorder(
-        codec: Codec.pcm16,
-        audioSource: AudioSource.voice_communication,
-        toStream: _player?.foodSink?.transform(StreamSinkTransformer.fromHandlers(
-          handleData: (food, sink) {
-            if (food is FoodData && food.data != null) {
-              final ulaw = g711.pcm16ToUlaw(food.data!);
-              final pcm16 = g711.ulawToPcm16(ulaw);
-              // assert(food.data == pcm16);
-              log('${food.data}\n$pcm16');
-              sink.add(FoodData(pcm16));
-            }
-          },
-        )),
-      );
-    }
-    setState(() {});
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -102,10 +60,7 @@ class _MyAppState extends State<MyApp> {
         body: Column(
           children: [
             Text('Running on: $_platformVersion\n${native_add(1, 2) + native_add_func(3, 4)}'),
-            OutlinedButton(
-              onPressed: _test,
-              child: Text(_player?.isPlaying == true ? 'stop' : 'play'),
-            ),
+            const SoundButton(),
             OutlinedButton(
               onPressed: () {
                 final g1 = NativeG711Codec();
