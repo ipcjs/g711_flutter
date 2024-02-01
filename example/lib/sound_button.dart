@@ -12,14 +12,14 @@ import 'package:permission_handler/permission_handler.dart';
 class SoundButton extends StatefulWidget {
   const SoundButton({
     Key? key,
-  }): super(key: key);
+  }) : super(key: key);
 
   @override
   State<SoundButton> createState() => _SoundButtonState();
 }
 
 class _SoundButtonState extends State<SoundButton> {
-  late NativeG711Codec g711 = NativeG711Codec();
+  late NativeG711uCodec g711 = NativeG711uCodec();
   FlutterSoundPlayer? _player;
   FlutterSoundRecorder? _recorder;
 
@@ -49,11 +49,12 @@ class _SoundButtonState extends State<SoundButton> {
       _recorder?.startRecorder(
         codec: Codec.pcm16,
         audioSource: AudioSource.voice_communication,
-        toStream: _player?.foodSink?.transform(StreamSinkTransformer.fromHandlers(
+        toStream:
+            _player?.foodSink?.transform(StreamSinkTransformer.fromHandlers(
           handleData: (food, sink) {
             if (food is FoodData && food.data != null) {
-              final ulaw = g711.pcm16ToUlaw(food.data!);
-              final pcm16 = g711.ulawToPcm16(ulaw);
+              final ulaw = g711.encode(food.data!);
+              final pcm16 = g711.decode(ulaw);
               // assert(food.data == pcm16);
               log('${food.data}\n$pcm16');
               sink.add(FoodData(pcm16));
@@ -65,10 +66,9 @@ class _SoundButtonState extends State<SoundButton> {
     setState(() {});
   }
 
-
   @override
   Widget build(BuildContext context) {
-   return OutlinedButton(
+    return OutlinedButton(
       onPressed: _test,
       child: Text(_player?.isPlaying == true ? 'stop' : 'play'),
     );

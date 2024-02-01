@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:g711_flutter/g711_flutter.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  late NativeG711Codec g711 = NativeG711Codec();
+  late NativeG711uCodec g711 = NativeG711uCodec();
 
   @override
   void initState() {
@@ -35,7 +36,8 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion = await NativeG711Codec.platformVersion ?? 'Unknown platform version';
+      platformVersion =
+          await NativeG711uCodec.platformVersion ?? 'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -59,17 +61,19 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Column(
           children: [
-            Text('Running on: $_platformVersion\n${native_add(1, 2) + native_add_func(3, 4)}'),
+            Text(
+                'Running on: $_platformVersion\n${native_add(1, 2) + native_add_func(3, 4)}'),
             const SoundButton(),
             OutlinedButton(
               onPressed: () {
-                final g1 = NativeG711Codec();
-                final g2 = DartG711Codec();
-                final pcm16 = Uint8List.sublistView(Int16List.fromList([1, -1, 0xffff, 0, 0x7fff, 0x8000]));
-                final ulaw1 = g1.pcm16ToUlaw(pcm16);
-                final ulaw2 = g2.pcm16ToUlaw(pcm16);
-                final pcm1 = g1.ulawToPcm16(ulaw1);
-                final pcm2 = g2.ulawToPcm16(ulaw2);
+                final g1 = NativeG711uCodec();
+                final g2 = DartG711uCodec();
+                final pcm16 = Uint8List.sublistView(
+                    Int16List.fromList([1, -1, 0xffff, 0, 0x7fff, 0x8000]));
+                final ulaw1 = g1.encode(pcm16);
+                final ulaw2 = g2.encode(pcm16);
+                final pcm1 = g1.decode(ulaw1);
+                final pcm2 = g2.decode(ulaw2);
                 log('''
                   pcm16: $pcm16
                   ulaw1: $ulaw1
@@ -84,18 +88,25 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 final w = Stopwatch()..start();
 
-                w.printElapsed('native.preload', () => NativeG711Codec.forcePreloadTable());
-                w.printElapsed('dart  .preload', () => DartG711Codec.forcePreloadTable());
+                w.printElapsed('native.preload',
+                    () => NativeG711uCodec.forcePreloadTable());
+                w.printElapsed(
+                    'dart  .preload', () => DartG711uCodec.forcePreloadTable());
 
-                final g1 = NativeG711Codec();
-                final g2 = DartG711Codec();
+                final g1 = NativeG711uCodec();
+                final g2 = DartG711uCodec();
                 final random = math.Random();
-                final pcm16 = Uint8List.fromList(List.generate(1024 * 1024, (index) => random.nextInt(0xff)));
+                final pcm16 = Uint8List.fromList(List.generate(
+                    1024 * 1024, (index) => random.nextInt(0xff)));
 
-                final ulaw1 = w.printElapsed('native.pcm16ToUlaw', () => g1.pcm16ToUlaw(pcm16));
-                final ulaw2 = w.printElapsed('dart  .pcm16ToUlaw', () => g2.pcm16ToUlaw(pcm16));
-                final pcm1 = w.printElapsed('native.ulawToPcm16', () => g1.ulawToPcm16(ulaw1));
-                final pcm2 = w.printElapsed('dart  .ulawToPcm16', () => g2.ulawToPcm16(ulaw2));
+                final ulaw1 =
+                    w.printElapsed('native.encode', () => g1.encode(pcm16));
+                final ulaw2 =
+                    w.printElapsed('dart  .encode', () => g2.encode(pcm16));
+                final pcm1 =
+                    w.printElapsed('native.decode', () => g1.decode(ulaw1));
+                final pcm2 =
+                    w.printElapsed('dart  .decode', () => g2.decode(ulaw2));
               },
               child: const Text('performance test'),
             ),
@@ -112,7 +123,8 @@ extension StopwatchExt on Stopwatch {
     final result = block();
     final elapsed = this.elapsed;
 
-    print('$tag: $elapsed ${printResult ? result : ''}');
+    if (kDebugMode) print('$tag: $elapsed ${printResult ? result : ''}');
+
     return result;
   }
 }

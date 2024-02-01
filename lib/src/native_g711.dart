@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
 import 'package:flutter/services.dart';
+
+import 'g711_codec.dart';
+import 'g711_codec_legacy.dart';
 
 final DynamicLibrary _g711 = Platform.isAndroid
     ? DynamicLibrary.open('libg711.so')
@@ -30,13 +32,7 @@ final _pcm16_to_ulaw = _g711.lookupFunction<
     Void Function(Int32, Pointer<Uint8>, Pointer<Uint8>),
     void Function(int, Pointer<Uint8>, Pointer<Uint8>)>('pcm16_to_ulaw');
 
-abstract class G711Codec {
-  Uint8List pcm16ToUlaw(Uint8List pcm16);
-
-  Uint8List ulawToPcm16(Uint8List g711);
-}
-
-class NativeG711Codec implements G711Codec {
+class NativeG711uCodec extends IG711Codec with LegacyG711uCodecMixin {
   static var _initiated = false;
 
   static void forcePreloadTable() {
@@ -44,7 +40,7 @@ class NativeG711Codec implements G711Codec {
     _ulaw_pcm16_tableinit();
   }
 
-  NativeG711Codec() {
+  NativeG711uCodec() {
     if (!_initiated) {
       _initiated = true;
       forcePreloadTable();
@@ -52,12 +48,12 @@ class NativeG711Codec implements G711Codec {
   }
 
   @override
-  Uint8List pcm16ToUlaw(Uint8List pcm16) {
-    final inSize = pcm16.length;
+  Uint8List encode(Uint8List pcm) {
+    final inSize = pcm.length;
     final outSize = inSize ~/ 2;
     final inArray = calloc<Uint8>(inSize);
     final outArray = calloc<Uint8>(outSize);
-    inArray.asTypedList(pcm16.length).setAll(0, pcm16);
+    inArray.asTypedList(pcm.length).setAll(0, pcm);
 
     _pcm16_to_ulaw(inSize, inArray, outArray);
 
@@ -68,7 +64,7 @@ class NativeG711Codec implements G711Codec {
   }
 
   @override
-  Uint8List ulawToPcm16(Uint8List g711) {
+  Uint8List decode(Uint8List g711) {
     final inSize = g711.length;
     final outSize = inSize * 2;
     final inArray = calloc<Uint8>(inSize);
