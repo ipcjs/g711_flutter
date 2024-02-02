@@ -2,11 +2,10 @@ import 'dart:typed_data';
 
 import 'g711.dart';
 import 'g711_codec.dart';
-import 'g711_codec_legacy.dart';
 import 'int_list.dart';
 
 /// Created by ipcjs on 2022/1/8.
-class DartG711uCodec extends IG711Codec with LegacyG711uCodecMixin {
+class DartG711uCodec extends G711Codec {
   static final _linear_to_ulaw = List<int?>.filled(65536, null);
   static final _ulaw_to_linear = List<int?>.filled(256, null);
 

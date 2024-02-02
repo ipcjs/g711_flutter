@@ -6,7 +6,6 @@ import 'package:ffi/ffi.dart';
 import 'package:flutter/services.dart';
 
 import 'g711_codec.dart';
-import 'g711_codec_legacy.dart';
 
 final DynamicLibrary _g711 = Platform.isAndroid
     ? DynamicLibrary.open('libg711.so')
@@ -32,7 +31,7 @@ final _pcm16_to_ulaw = _g711.lookupFunction<
     Void Function(Int32, Pointer<Uint8>, Pointer<Uint8>),
     void Function(int, Pointer<Uint8>, Pointer<Uint8>)>('pcm16_to_ulaw');
 
-class NativeG711uCodec extends IG711Codec with LegacyG711uCodecMixin {
+class NativeG711uCodec extends G711Codec {
   static var _initiated = false;
 
   static void forcePreloadTable() {
