@@ -22,7 +22,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  late NativeG711uCodec g711 = NativeG711uCodec();
+  late NativeG711Codec g711 = NativeG711Codec.g711u();
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await NativeG711uCodec.platformVersion ?? 'Unknown platform version';
+          await NativeG711Codec.platformVersion ?? 'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -66,8 +66,8 @@ class _MyAppState extends State<MyApp> {
             const SoundButton(),
             OutlinedButton(
               onPressed: () {
-                final g1 = NativeG711uCodec();
-                final g2 = DartG711uCodec();
+                final g1 = NativeG711Codec.g711u();
+                final g2 = DartG711Codec.g711u();
                 final pcm16 = Uint8List.sublistView(
                     Int16List.fromList([1, -1, 0xffff, 0, 0x7fff, 0x8000]));
                 final ulaw1 = g1.encode(pcm16);
@@ -88,13 +88,10 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 final w = Stopwatch()..start();
 
-                w.printElapsed('native.preload',
-                    () => NativeG711uCodec.forcePreloadTable());
-                w.printElapsed(
-                    'dart  .preload', () => DartG711uCodec.forcePreloadTable());
-
-                final g1 = NativeG711uCodec();
-                final g2 = DartG711uCodec();
+                final g1 = NativeG711Codec.g711u();
+                final g2 = DartG711Codec.g711u();
+                w.printElapsed('native.preload', () => g1.forcePreloadTable());
+                w.printElapsed('dart  .preload', () => g2.forcePreloadTable());
                 final random = math.Random();
                 final pcm16 = Uint8List.fromList(List.generate(
                     1024 * 1024, (index) => random.nextInt(0xff)));

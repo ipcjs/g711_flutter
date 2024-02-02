@@ -20,6 +20,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await NativeG711uCodec.platformVersion, '42');
+    expect(await NativeG711Codec.platformVersion, '42');
   });
 }

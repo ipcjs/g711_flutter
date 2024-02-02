@@ -24,6 +24,12 @@ final _pcm16_ulaw_tableinit = _g711
 final _ulaw_pcm16_tableinit = _g711
     .lookupFunction<Void Function(), void Function()>('ulaw_pcm16_tableinit');
 
+final _pcm16_alaw_tableinit = _g711
+    .lookupFunction<Void Function(), void Function()>('pcm16_alaw_tableinit');
+
+final _alaw_pcm16_tableinit = _g711
+    .lookupFunction<Void Function(), void Function()>('alaw_pcm16_tableinit');
+
 final _ulaw_to_pcm16 = _g711.lookupFunction<
     Void Function(Int32, Pointer<Uint8>, Pointer<Uint8>),
     void Function(int, Pointer<Uint8>, Pointer<Uint8>)>('ulaw_to_pcm16');
@@ -31,19 +37,43 @@ final _pcm16_to_ulaw = _g711.lookupFunction<
     Void Function(Int32, Pointer<Uint8>, Pointer<Uint8>),
     void Function(int, Pointer<Uint8>, Pointer<Uint8>)>('pcm16_to_ulaw');
 
-class NativeG711uCodec extends G711Codec {
-  static var _initiated = false;
+final _alaw_to_pcm16 = _g711.lookupFunction<
+    Void Function(Int32, Pointer<Uint8>, Pointer<Uint8>),
+    void Function(int, Pointer<Uint8>, Pointer<Uint8>)>('alaw_to_pcm16');
+final _pcm16_to_alaw = _g711.lookupFunction<
+    Void Function(Int32, Pointer<Uint8>, Pointer<Uint8>),
+    void Function(int, Pointer<Uint8>, Pointer<Uint8>)>('pcm16_to_alaw');
 
-  static void forcePreloadTable() {
-    _pcm16_ulaw_tableinit();
-    _ulaw_pcm16_tableinit();
-  }
+class NativeG711Codec extends G711Codec {
+  @Deprecated('Use NativeG711Codec.g711u instead')
+  factory NativeG711Codec() = NativeG711Codec.g711u;
 
-  NativeG711uCodec() {
+  NativeG711Codec.g711u()
+      : this._(_pcm16_to_ulaw, _ulaw_to_pcm16, () {
+          _pcm16_ulaw_tableinit();
+          _ulaw_pcm16_tableinit();
+        });
+
+  NativeG711Codec.g711a()
+      : this._(_pcm16_to_alaw, _alaw_to_pcm16, () {
+          _pcm16_alaw_tableinit();
+          _alaw_pcm16_tableinit();
+        });
+
+  NativeG711Codec._(this.pcm_to_law, this.law_to_pcm, this._initTable) {
     if (!_initiated) {
       _initiated = true;
-      forcePreloadTable();
+      _initTable();
     }
+  }
+
+  var _initiated = false;
+  final void Function() _initTable;
+  final void Function(int, Pointer<Uint8>, Pointer<Uint8>) pcm_to_law;
+  final void Function(int, Pointer<Uint8>, Pointer<Uint8>) law_to_pcm;
+
+  void forcePreloadTable() {
+    _initTable();
   }
 
   @override
@@ -54,7 +84,7 @@ class NativeG711uCodec extends G711Codec {
     final outArray = calloc<Uint8>(outSize);
     inArray.asTypedList(pcm.length).setAll(0, pcm);
 
-    _pcm16_to_ulaw(inSize, inArray, outArray);
+    pcm_to_law(inSize, inArray, outArray);
 
     final out = Uint8List.fromList(outArray.asTypedList(outSize));
     calloc.free(outArray);
@@ -70,7 +100,7 @@ class NativeG711uCodec extends G711Codec {
     final outArray = calloc<Uint8>(outSize);
     inArray.asTypedList(g711.length).setAll(0, g711);
 
-    _ulaw_to_pcm16(inSize, inArray, outArray);
+    law_to_pcm(inSize, inArray, outArray);
 
     final out = Uint8List.fromList(outArray.asTypedList(outSize));
     calloc.free(outArray);

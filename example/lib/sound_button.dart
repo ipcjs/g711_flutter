@@ -19,7 +19,7 @@ class SoundButton extends StatefulWidget {
 }
 
 class _SoundButtonState extends State<SoundButton> {
-  late NativeG711uCodec g711 = NativeG711uCodec();
+  late NativeG711Codec g711 = NativeG711Codec.g711u();
   FlutterSoundPlayer? _player;
   FlutterSoundRecorder? _recorder;
 
