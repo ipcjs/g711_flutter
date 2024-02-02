@@ -1,3 +1,7 @@
+## 2.1.1
+
+- Fix G711Codec not exported issue
+ 
 ## 2.1.0
 
 - Support G711a
