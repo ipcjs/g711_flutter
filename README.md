@@ -1,5 +1,7 @@
 # g711_flutter
 
+[![pub package](https://img.shields.io/pub/v/g711_flutter.svg)](https://pub.dartlang.org/packages/g711_flutter)
+
 PCM to G711 Fast Conversions
 
 ## Document
