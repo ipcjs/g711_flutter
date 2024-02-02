@@ -14,8 +14,8 @@ The time to process 1MB PCM is as follows.
 ```
 I/flutter (17001): native.preload: 0:00:00.001007 
 I/flutter (17001): dart  .preload: 0:00:00.003305 
-I/flutter (17001): native.pcm16ToUlaw: 0:00:00.001478 
-I/flutter (17001): dart  .pcm16ToUlaw: 0:00:00.017759 
-I/flutter (17001): native.ulawToPcm16: 0:00:00.001663 
-I/flutter (17001): dart  .ulawToPcm16: 0:00:00.010298 
+I/flutter (17001): native.encode: 0:00:00.001478 
+I/flutter (17001): dart  .encode: 0:00:00.017759 
+I/flutter (17001): native.decode: 0:00:00.001663 
+I/flutter (17001): dart  .decode: 0:00:00.010298 
 ```

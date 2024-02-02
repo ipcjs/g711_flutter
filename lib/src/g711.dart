@@ -1,3 +1,4 @@
+// ignore_for_file: constant_identifier_names, curly_braces_in_flow_control_structures
 
 /// copy from [g711.c](../../ios/Classes/g711.c)
 class G711{
