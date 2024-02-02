@@ -1,10 +1,10 @@
 name: g711_flutter
 description: PCM to G711 Fast Conversions
-version: 2.0.1
+version: 2.1.0
 homepage: https://github.com/ipcjs/g711_flutter
 
 environment:
-  sdk: ">=2.15.1 <3.0.0"
+  sdk: ">=2.15.1 <4.0.0"
   flutter: ">=2.5.0"
 
 dependencies:

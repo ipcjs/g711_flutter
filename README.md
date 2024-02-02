@@ -4,8 +4,8 @@ PCM to G711 Fast Conversions
 
 ## Document
 
-- [NativeG711uCodec](lib/src/native_g711.dart): Implemented by calling C code. ([escrichov/G711](https://github.com/escrichov/G711))
-- [DartG711uCodec](lib/src/dart_g711.dart): Implemented using pure Dart code.
+- [NativeG711Codec](lib/src/native_g711.dart): Implemented by calling C code. ([escrichov/G711](https://github.com/escrichov/G711))
+- [DartG711Codec](lib/src/dart_g711.dart): Implemented using pure Dart code.
 
 ### Performance
 

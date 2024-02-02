@@ -66,20 +66,31 @@ class _MyAppState extends State<MyApp> {
             const SoundButton(),
             OutlinedButton(
               onPressed: () {
-                final g1 = NativeG711Codec.g711u();
-                final g2 = DartG711Codec.g711u();
+                final nativeG711u = NativeG711Codec.g711u();
+                final nativeG711a = NativeG711Codec.g711a();
+                final dartG711u = DartG711Codec.g711u();
+                final dartG711a = DartG711Codec.g711a();
                 final pcm16 = Uint8List.sublistView(
                     Int16List.fromList([1, -1, 0xffff, 0, 0x7fff, 0x8000]));
-                final ulaw1 = g1.encode(pcm16);
-                final ulaw2 = g2.encode(pcm16);
-                final pcm1 = g1.decode(ulaw1);
-                final pcm2 = g2.decode(ulaw2);
+                final ulaw1 = nativeG711u.encode(pcm16);
+                final ulaw2 = dartG711u.encode(pcm16);
+                final pcm1 = nativeG711u.decode(ulaw1);
+                final pcm2 = dartG711u.decode(ulaw2);
+                final alaw1 = nativeG711a.encode(pcm16);
+                final alaw2 = dartG711a.encode(pcm16);
+                final pcm11 = nativeG711a.decode(alaw1);
+                final pcm12 = dartG711a.decode(alaw2);
+
                 log('''
                   pcm16: $pcm16
                   ulaw1: $ulaw1
                   ulaw2: $ulaw2
                   pcm1: $pcm1
                   pcm2: $pcm2
+                  alaw1: $alaw1
+                  alaw2: $alaw2
+                  pcm11: $pcm11
+                  pcm12: $pcm12
                 ''');
               },
               child: const Text('check result'),
@@ -120,7 +131,7 @@ extension StopwatchExt on Stopwatch {
     final result = block();
     final elapsed = this.elapsed;
 
-    if (kDebugMode) print('$tag: $elapsed ${printResult ? result : ''}');
+    print('$tag: $elapsed ${printResult ? result : ''}');
 
     return result;
   }
