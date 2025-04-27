@@ -1,3 +1,7 @@
+## 2.2.0
+
+- Update to Flutter 3.24 & Gradle 8
+
 ## 2.1.1
 
 - Fix G711Codec not exported issue

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:async/async.dart'
     show StreamSinkExtensions, StreamSinkTransformer;
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:g711_flutter/g711_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';

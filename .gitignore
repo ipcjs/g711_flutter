@@ -30,3 +30,6 @@ build/
 .cxx/
 gradle-wrapper.jar
 
+# FVM Version Cache
+.fvm/
+.fvmrc
